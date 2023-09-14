@@ -1,0 +1,38 @@
+server:
+  port: 9002
+  servlet:
+    context-path: /booking-svc
+  error:
+    include-message: always
+
+logging:
+  level:
+    web: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+      hibernate:
+        SQL: TRACE
+        orm.jdbc.bind: TRACE
+
+springdoc:
+  swagger-ui:
+    path: /doc
+    disable-swagger-default-url: true
+    operationsSorter: method
+  api-docs:
+    path: /api-docs
+  packages-to-scan: com.paloit.meeting_room_booking.controller
+
+spring:
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        username: postgres
+        password: postgres
+        url: jdbc:postgresql://localhost:5432/booking
+    jpa:
+      hibernate:
+        ddl-auto:  update
+      properties:
+        hibernate:
+          format_sql: true
