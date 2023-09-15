@@ -1,6 +1,9 @@
 package com.paloit.meeting_room_booking.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +15,6 @@ import com.paloit.meeting_room_booking.entity.Booking;
 import com.paloit.meeting_room_booking.entity.Room;
 import com.paloit.meeting_room_booking.model.request.BookingRequest;
 import com.paloit.meeting_room_booking.model.request.CreateRoomRequest;
-import com.paloit.meeting_room_booking.model.request.SearchAvailableRoomRequest;
 import com.paloit.meeting_room_booking.model.response.RoomResponse;
 import com.paloit.meeting_room_booking.repository.BookingRepository;
 import com.paloit.meeting_room_booking.repository.RoomRepository;
@@ -23,6 +25,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class RoomService {
+
+    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final RoomRepository roomRepo;
     private final BookingRepository bookingRepo;
@@ -48,12 +53,18 @@ public class RoomService {
         return new RoomResponse(newRoom);
     }
 
-    public List<RoomResponse> searchAvailableRoom(SearchAvailableRoomRequest req) {
-        return roomRepo.findAvailableRoom(req.getNumberOfGuest(), req.getStartTime(), req.getEndTime())
+    public List<RoomResponse> searchAvailableRoom(String date, String startTime, String endTime,
+            Integer numberOfGuest) {
+        LocalDate convertedDate = LocalDate.parse(date, DATE_FORMATTER);
+        LocalTime convertedStartTime = LocalTime.parse(startTime, TIME_FORMATTER);
+        LocalTime convertedEndTime = LocalTime.parse(endTime, TIME_FORMATTER);
+        return roomRepo
+                .findAvailableRoom(numberOfGuest, LocalDateTime.of(convertedDate, convertedStartTime),
+                        LocalDateTime.of(convertedDate, convertedEndTime))
                 .stream().map(RoomResponse::new).toList();
     }
 
-    public void deleteRoom(Long roomId){
+    public void deleteRoom(Long roomId) {
         roomRepo.deleteById(roomId);
     }
 
@@ -69,11 +80,12 @@ public class RoomService {
         bookingRepo.save(booking);
     }
 
-    private boolean validateBookingTime(LocalDateTime startTime, LocalDateTime endTime){
-        return startTime.isBefore(endTime) && isWithin30MinuteTimeFrame(startTime) && isWithin30MinuteTimeFrame(endTime);
+    private boolean validateBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
+        return startTime.isBefore(endTime) && isWithin30MinuteTimeFrame(startTime)
+                && isWithin30MinuteTimeFrame(endTime);
     }
 
-    private boolean isWithin30MinuteTimeFrame(LocalDateTime time){
+    private boolean isWithin30MinuteTimeFrame(LocalDateTime time) {
         return (time.getMinute() % 30) == 0;
     }
 }
