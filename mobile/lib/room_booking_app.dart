@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meeting_room_booking/controller/booking_summary_page_controller.dart';
 import 'package:meeting_room_booking/controller/room_selection_page_controller.dart';
 import 'package:meeting_room_booking/controller/search_room_page_controller.dart';
 import 'package:meeting_room_booking/page/search_room_page.dart';
@@ -13,11 +14,13 @@ class RoomBookingApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SearchRoomPageController()),
         ChangeNotifierProvider(create: (_) => RoomSelectionPageController()),
+        ChangeNotifierProvider(create: (_) => BookingSummaryPageController()),
       ],
       child: MaterialApp(
         title: 'Palo IT Meeting Room Booking App',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          colorSchemeSeed: const Color(0xFF5CC99B),
         ),
         home: const SearchRoomPage(),
         // home: const LandingPage(),

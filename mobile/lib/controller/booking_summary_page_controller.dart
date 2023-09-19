@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meeting_room_booking/model/booking_summary.dart';
 import 'package:meeting_room_booking/model/room.dart';
-import 'package:meeting_room_booking/model/room_selection.dart';
 
-class RoomSelectionPageController with ChangeNotifier {
+class BookingSummaryPageController with ChangeNotifier {
   final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  final Dio dio = Dio();
 
   DateTime? _selectedDate;
   DateTime? get selectedDate => _selectedDate;
@@ -17,28 +17,30 @@ class RoomSelectionPageController with ChangeNotifier {
   TimeOfDay? _selectedEndTime;
   TimeOfDay? get selectedEndTime => _selectedEndTime;
 
-  int? _capacity;
-  int? get capacity => _capacity;
+  Room? _roomDetail;
+  Room? get roomDetail => _roomDetail;
 
-  List<Room>? _rooms;
-  List<Room>? get rooms => _rooms;
-
-  void initData(RoomSelection roomSelection) {
+  void initData(BookingSummary roomSelection) {
     _selectedDate = roomSelection.selectedDate;
     _selectedStartTime = roomSelection.selectedStartTime;
     _selectedEndTime = roomSelection.selectedEndTime;
-    _capacity = roomSelection.capacity;
-    _rooms = roomSelection.rooms;
+    getRoomDetail(roomSelection.id!).then((resp) => _roomDetail = resp);
     notifyListeners();
   }
 
-  BookingSummary getBookingSummary(int index) {
-    return BookingSummary(
-      id: _rooms![index].id,
-      selectedDate: _selectedDate,
-      selectedStartTime: _selectedStartTime,
-      selectedEndTime: _selectedEndTime,
-    );
+  Future<Room?> getRoomDetail(int id) async {
+    try {
+      Response response =
+          await dio.get('http://localhost:9002/booking-svc/api/v1/room/$id');
+
+      if (response.statusCode == 200) {
+        _roomDetail = Room.fromJson(response.data);
+      }
+      notifyListeners();
+      return roomDetail;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   String getFormattedDate() {

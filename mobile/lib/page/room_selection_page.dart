@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:meeting_room_booking/common/room_card.dart';
 import 'package:meeting_room_booking/controller/room_selection_page_controller.dart';
-import 'package:meeting_room_booking/model/room_selection.dart';
+import 'package:meeting_room_booking/page/booking_summary_page.dart';
 import 'package:provider/provider.dart';
 
 import '../common/booking_room_app_bar.dart';
 
 class RoomSelectionPage extends StatefulWidget {
   const RoomSelectionPage({super.key});
-  // const RoomSelectionPage(this.selectedDate, this.startTime, this.endTime,
-  //     {super.key});
-  // final DateTime selectedDate;
-  // final DateTime startTime;
-  // final DateTime endTime;
   @override
   State<RoomSelectionPage> createState() => _RoomSelectionPageState();
 }
@@ -39,46 +34,74 @@ class _RoomSelectionPageState extends State<RoomSelectionPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Date'),
-            Container(
-              color: const Color(0xFF5CC99B),
-              width: MediaQuery.of(context).size.width,
-              height: 45,
-              child: Center(
-                child: Text(
-                  context
-                      .watch<RoomSelectionPageController>()
-                      .getFormattedDate(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'Open Sans',
-                    fontWeight: FontWeight.w400,
-                    height: 1.5,
-                  ),
+            Column(
+              children: [
+                Row(
+                  children: const [
+                    Text('Date'),
+                    Spacer(),
+                    Text('Time'),
+                    SizedBox(
+                      width: 175,
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text('Time'),
-            Container(
-              color: const Color(0xFF5CC99B),
-              width: MediaQuery.of(context).size.width,
-              height: 45,
-              child: Center(
-                child: Text(
-                  '${context.watch<RoomSelectionPageController>().getFormattedStartTime()} - ${context.watch<RoomSelectionPageController>().getFormattedEndTime()}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'Open Sans',
-                    fontWeight: FontWeight.w400,
-                    height: 1.5,
-                  ),
-                ),
-              ),
+                Row(
+                  children: [
+                    Container(
+                      width: 130,
+                      height: 45,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF5CC99B),
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              width: 1, color: Color(0xFF5CC99B)),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          context
+                              .watch<RoomSelectionPageController>()
+                              .getFormattedDate(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Open Sans',
+                            fontWeight: FontWeight.w400,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: 210,
+                      height: 45,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF5CC99B),
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              width: 1, color: Color(0xFF5CC99B)),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${context.watch<RoomSelectionPageController>().getFormattedStartTime()} - ${context.watch<RoomSelectionPageController>().getFormattedEndTime()}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Open Sans',
+                            fontWeight: FontWeight.w400,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
             const SizedBox(
               height: 30,
@@ -97,24 +120,32 @@ class _RoomSelectionPageState extends State<RoomSelectionPage> {
                         0,
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () {},
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                          border: Border.all()),
-                      width: MediaQuery.of(context).size.width,
-                      height: 75,
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Row(
-                        children: [
-                          Text(
-                              'Room ${context.read<RoomSelectionPageController>().rooms?[index].name}'),
-                          const Spacer(),
-                          Text(
-                              '${context.read<RoomSelectionPageController>().capacity} Guest Max')
-                        ],
-                      ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BookingSummaryPage(),
+                          settings: RouteSettings(
+                            name: 'booking_summary_page',
+                            arguments: {
+                              "bookingSummary": context
+                                  .read<RoomSelectionPageController>()
+                                  .getBookingSummary(index),
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: RoomCard(
+                      name: context
+                              .read<RoomSelectionPageController>()
+                              .rooms?[index]
+                              .name ??
+                          "-",
+                      capacity: context
+                              .read<RoomSelectionPageController>()
+                              .rooms?[index]
+                              .capacity ??
+                          0,
                     ),
                   );
                 },
