@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meeting_room_booking/page/search_room_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -97,7 +98,13 @@ class _LandingPageState extends State<LandingPage> {
                           splashFactory: NoSplash.splashFactory,
                           backgroundColor: const Color(0xFF5CC99B),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const SearchRoomPage(),
+                            ),
+                          );
+                        },
                         child: const Text(
                           'Login',
                           style: TextStyle(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:meeting_room_booking/common/booking_room_app_bar.dart';
 import 'package:meeting_room_booking/common/date_picker_form_field.dart';
 import 'package:meeting_room_booking/common/time_picker_form_field.dart';

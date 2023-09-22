@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meeting_room_booking/controller/booking_summary_page_controller.dart';
 import 'package:meeting_room_booking/controller/room_selection_page_controller.dart';
 import 'package:meeting_room_booking/controller/search_room_page_controller.dart';
-import 'package:meeting_room_booking/page/search_room_page.dart';
+import 'package:meeting_room_booking/page/landing_page.dart';
 import 'package:provider/provider.dart';
 
 class RoomBookingApp extends StatelessWidget {
@@ -22,9 +22,7 @@ class RoomBookingApp extends StatelessWidget {
           useMaterial3: true,
           colorSchemeSeed: const Color(0xFF5CC99B),
         ),
-        home: const SearchRoomPage(),
-        // home: const LandingPage(),
-        // home: RoomSelectionPage(DateTime.now(), DateTime.now(), DateTime.now()),
+        home: const LandingPage(),
       ),
     );
   }
