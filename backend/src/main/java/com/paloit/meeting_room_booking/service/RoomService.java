@@ -58,6 +58,10 @@ public class RoomService {
         LocalDate convertedDate = LocalDate.parse(date, DATE_FORMATTER);
         LocalTime convertedStartTime = LocalTime.parse(startTime, TIME_FORMATTER);
         LocalTime convertedEndTime = LocalTime.parse(endTime, TIME_FORMATTER);
+
+        validateBookingTime(LocalDateTime.of(convertedDate, convertedStartTime),
+                LocalDateTime.of(convertedDate, convertedEndTime));
+
         return roomRepo
                 .findAvailableRoom(numberOfGuest, LocalDateTime.of(convertedDate, convertedStartTime),
                         LocalDateTime.of(convertedDate, convertedEndTime))
@@ -68,21 +72,33 @@ public class RoomService {
         roomRepo.deleteById(roomId);
     }
 
-    public void bookRoom(Long roomId, Long userId, BookingRequest req) {
-        if (validateBookingTime(req.getStartTime(), req.getEndTime())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Booking Time");
-        }
+    public Long bookRoom(Long roomId, Long userId, BookingRequest req) {
+        validateBookingTime(req.getStartTime(), req.getEndTime());
+
         Booking booking = new Booking();
         booking.setStartTime(req.getStartTime());
         booking.setEndTime(req.getEndTime());
         booking.setRoom(roomRepo.findById(roomId).get());
         booking.setUser(userRepo.findById(userId).get());
-        bookingRepo.save(booking);
+        booking = bookingRepo.save(booking);
+        return booking.getId();
     }
 
-    private boolean validateBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
-        return startTime.isBefore(endTime) && isWithin30MinuteTimeFrame(startTime)
-                && isWithin30MinuteTimeFrame(endTime);
+    private void validateBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
+        boolean isBeforePresent = isBeforePresent(startTime) || isBeforePresent(endTime);
+        boolean isBeforeStartTime = endTime.isBefore(startTime);
+        boolean isWithin30MinTimeFrame = isWithin30MinuteTimeFrame(startTime) && isWithin30MinuteTimeFrame(endTime);
+
+        System.out.println(isBeforePresent);
+        System.out.println(isBeforeStartTime);
+        System.out.println(!isWithin30MinTimeFrame);
+        if (isBeforePresent || isBeforeStartTime || !isWithin30MinTimeFrame) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Booking Time");
+        }
+    }
+
+    private boolean isBeforePresent(LocalDateTime time){
+        return time.isBefore(LocalDateTime.now());
     }
 
     private boolean isWithin30MinuteTimeFrame(LocalDateTime time) {

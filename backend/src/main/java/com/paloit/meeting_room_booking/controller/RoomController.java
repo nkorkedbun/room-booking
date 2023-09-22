@@ -58,9 +58,9 @@ public class RoomController {
     }
 
     @PostMapping("/{id}/book")
-    public void bookRoom(@PathVariable("id") Long roomId, @RequestBody BookingRequest req,
+    public Long bookRoom(@PathVariable("id") Long roomId, @RequestBody BookingRequest req,
             @RequestHeader("user_id") Long userId) {
-        service.bookRoom(roomId, userId, req);
+        return service.bookRoom(roomId, userId, req);
     }
 
     @DeleteMapping("/{id}")
