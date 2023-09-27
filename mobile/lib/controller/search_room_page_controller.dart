@@ -23,10 +23,6 @@ class SearchRoomPageController with ChangeNotifier {
 
   Future<void> getAvailableRoomList() async {
     try {
-      // print(dateFormat.format(selectedDate!));
-      // print(convertToHHmm(_selectedStartTime!));
-      // print(convertToHHmm(_selectedEndTime!));
-      // print(capacity);
       final Response response = await _dio.get(
           'http://localhost:9002/booking-svc/api/v1/room',
           queryParameters: {

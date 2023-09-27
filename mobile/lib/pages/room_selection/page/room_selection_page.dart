@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meeting_room_booking/common/room_card.dart';
 import 'package:meeting_room_booking/controller/room_selection_page_controller.dart';
-import 'package:meeting_room_booking/page/booking_summary_page.dart';
+import 'package:meeting_room_booking/pages/booking_summary/page/booking_summary_page.dart';
 import 'package:provider/provider.dart';
 
-import '../common/booking_room_app_bar.dart';
+import '../../../common/booking_room_app_bar.dart';
 
 class RoomSelectionPage extends StatefulWidget {
   const RoomSelectionPage({super.key});
