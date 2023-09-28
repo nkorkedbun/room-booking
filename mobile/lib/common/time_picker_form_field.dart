@@ -45,4 +45,10 @@ class _TimePickerFormFieldState extends State<TimePickerFormField> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    timeController.dispose();
+    super.dispose();
+  }
 }

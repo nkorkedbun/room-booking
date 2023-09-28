@@ -47,4 +47,10 @@ class _DatePickerFormFieldState extends State<DatePickerFormField> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    dateController.dispose();
+    super.dispose();
+  }
 }
