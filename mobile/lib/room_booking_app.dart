@@ -7,7 +7,9 @@ import 'package:meeting_room_booking/main/main_app.dart';
 import 'package:meeting_room_booking/main/main_injector.dart';
 import 'package:meeting_room_booking/main/main_localization.dart';
 import 'package:meeting_room_booking/main/main_system.dart';
+import 'package:meeting_room_booking/pages/booking_summary/bloc/booking_summary_page_cubit.dart';
 import 'package:meeting_room_booking/pages/landing_page/landing_page.dart';
+import 'package:meeting_room_booking/pages/room_selection/bloc/room_selection_page_cubit.dart';
 import 'package:meeting_room_booking/pages/search_room/bloc/search_room_page_cubit.dart';
 import 'package:provider/provider.dart';
 import 'package:root_dependencies/root_dependencies.dart';
@@ -21,6 +23,12 @@ class RoomBookingApp extends StatelessWidget {
       providers: [
         BlocProvider<SerachRoomPageCubit>(
           create: (context) => SerachRoomPageCubit(),
+        ),
+        BlocProvider<RoomSelectionPageCubit>(
+          create: (context) => RoomSelectionPageCubit(),
+        ),
+        BlocProvider<BookingSummaryPageCubit>(
+          create: (context) => BookingSummaryPageCubit(),
         ),
       ],
       child: MaterialApp(

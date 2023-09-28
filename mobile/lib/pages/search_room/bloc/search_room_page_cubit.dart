@@ -1,43 +1,64 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:meeting_room_booking/model/room.dart';
+import 'package:meeting_room_booking/model/room_selection.dart';
 import 'package:meeting_room_booking/pages/search_room/bloc/search_room_page_state.dart';
 
 class SerachRoomPageCubit extends Cubit<SearchRoomPageState> {
   SerachRoomPageCubit() : super(const SearchRoomPageState());
 
-  // final Dio _dio = Dio();
-  // final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-  // final DateFormat timeFormat = DateFormat('H:mm');
+  final Dio _dio = Dio();
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
-  // Future<void> getAvailableRoomList() async {
-  //   try {
-  //     final Response response = await _dio.get(
-  //       'http://localhost:9002/booking-svc/api/v1/room',
-  //       queryParameters: {
-  //         'date': dateFormat.format(state.selectedDate!),
-  //         'start_time': convertToHHmm(state.selectedStartTime!),
-  //         'end_time': convertToHHmm(state.selectedEndTime!),
-  //         'capacity': state.selectedCapacity,
-  //       },
-  //     );
+  Future<void> getAvailableRoomList() async {
+    try {
+      final Response response = await _dio.get(
+        'http://localhost:9002/booking-svc/api/v1/room',
+        queryParameters: {
+          'date': dateFormat.format(state.selectedDate!),
+          'start_time': convertToHHmm(state.selectedStartTime!),
+          'end_time': convertToHHmm(state.selectedEndTime!),
+          'capacity': state.selectedCapacity,
+        },
+      );
 
-  //     if (response.statusCode == 200) {
-  //       _roomList.clear();
+      List<Room> roomList = [];
+      if (response.statusCode == 200) {
+        List roomListResp = response.data!;
+        for (var data in roomListResp) {
+          Room room = Room.fromJson(data);
+          roomList.add(room);
+        }
+      }
+      emit(state.copyWith(
+        roomList: roomList,
+        // status: SearchRoomStatus.init,
+      ));
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      // emit(state.copyWith(
+      //   status: SearchRoomStatus.fail,
+      //   code: e.response?.statusCode,
+      //   message: e.response?.statusMessage,
+      // ));
+      rethrow;
+    }
+  }
 
-  //       List roomListResp = response.data!;
-  //       for (var data in roomListResp) {
-  //         Room room = Room.fromJson(data);
-  //         _roomList.add(room);
-  //       }
-  //     }
-  //     notifyListeners();
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //     rethrow;
-  //   }
-  // }
+  RoomSelection createRoomSelection() {
+    return RoomSelection(
+      selectedDate: state.selectedDate,
+      selectedStartTime: state.selectedStartTime,
+      selectedEndTime: state.selectedEndTime,
+      selectedCapacity: state.selectedCapacity,
+      rooms: state.roomList,
+    );
+  }
 
   void setSelectedDate(DateTime selectedDate) {
     emit(state.copyWith(

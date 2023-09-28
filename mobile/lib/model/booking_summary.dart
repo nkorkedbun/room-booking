@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:meeting_room_booking/model/room.dart';
 
 class BookingSummary {
-  int? id;
   DateTime? selectedDate;
   TimeOfDay? selectedStartTime;
   TimeOfDay? selectedEndTime;
+  Room? roomDetail;
 
   BookingSummary({
-    this.id,
     this.selectedDate,
     this.selectedStartTime,
     this.selectedEndTime,
+    this.roomDetail,
   });
 }

@@ -5,14 +5,14 @@ class RoomSelection {
   DateTime? selectedDate;
   TimeOfDay? selectedStartTime;
   TimeOfDay? selectedEndTime;
-  int? capacity;
+  int? selectedCapacity;
   List<Room>? rooms;
 
   RoomSelection({
     this.selectedDate,
     this.selectedStartTime,
     this.selectedEndTime,
-    this.capacity,
+    this.selectedCapacity,
     this.rooms,
   });
 }

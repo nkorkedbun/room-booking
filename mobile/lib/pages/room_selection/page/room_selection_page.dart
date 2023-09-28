@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meeting_room_booking/common/booking_room_app_bar.dart';
 import 'package:meeting_room_booking/common/room_card.dart';
-import 'package:meeting_room_booking/controller/room_selection_page_controller.dart';
+import 'package:meeting_room_booking/model/room.dart';
 import 'package:meeting_room_booking/pages/booking_summary/page/booking_summary_page.dart';
-import 'package:provider/provider.dart';
-
-import '../../../common/booking_room_app_bar.dart';
+import 'package:meeting_room_booking/pages/room_selection/bloc/room_selection_page_cubit.dart';
+import 'package:meeting_room_booking/pages/room_selection/bloc/room_selection_page_state.dart';
 
 class RoomSelectionPage extends StatefulWidget {
   const RoomSelectionPage({super.key});
@@ -13,13 +14,32 @@ class RoomSelectionPage extends StatefulWidget {
 }
 
 class _RoomSelectionPageState extends State<RoomSelectionPage> {
+  void onClickRoomCard(int id) {
+    context.read<RoomSelectionPageCubit>().getRoomDetail(id).then(
+      (value) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const BookingSummaryPage(),
+            settings: RouteSettings(
+              name: 'booking_summary_page',
+              arguments: {
+                "bookingSummary":
+                    context.read<RoomSelectionPageCubit>().getBookingSummary(),
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Map<String, dynamic>? data =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      context.read<RoomSelectionPageController>().initData(data?['data']);
+      context.read<RoomSelectionPageCubit>().initData(data?['data']);
     });
   }
 
@@ -62,7 +82,7 @@ class _RoomSelectionPageState extends State<RoomSelectionPage> {
                       child: Center(
                         child: Text(
                           context
-                              .watch<RoomSelectionPageController>()
+                              .watch<RoomSelectionPageCubit>()
                               .getFormattedDate(),
                           style: const TextStyle(
                             color: Colors.white,
@@ -88,7 +108,7 @@ class _RoomSelectionPageState extends State<RoomSelectionPage> {
                       ),
                       child: Center(
                         child: Text(
-                          '${context.watch<RoomSelectionPageController>().getFormattedStartTime()} - ${context.watch<RoomSelectionPageController>().getFormattedEndTime()}',
+                          '${context.watch<RoomSelectionPageCubit>().getFormattedStartTime()} - ${context.watch<RoomSelectionPageCubit>().getFormattedEndTime()}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -111,44 +131,24 @@ class _RoomSelectionPageState extends State<RoomSelectionPage> {
               height: 10,
             ),
             Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 20,
+              child: BlocSelector<RoomSelectionPageCubit,
+                  RoomSelectionPageState, List<Room>?>(
+                selector: (state) => state.roomList,
+                builder: (context, roomList) => ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 20,
+                  ),
+                  itemCount: roomList?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () => onClickRoomCard(roomList[index].id!),
+                      child: RoomCard(
+                        name: roomList![index].name!,
+                        capacity: roomList[index].capacity!,
+                      ),
+                    );
+                  },
                 ),
-                itemCount:
-                    context.read<RoomSelectionPageController>().rooms?.length ??
-                        0,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const BookingSummaryPage(),
-                          settings: RouteSettings(
-                            name: 'booking_summary_page',
-                            arguments: {
-                              "bookingSummary": context
-                                  .read<RoomSelectionPageController>()
-                                  .getBookingSummary(index),
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                    child: RoomCard(
-                      name: context
-                              .read<RoomSelectionPageController>()
-                              .rooms?[index]
-                              .name ??
-                          "-",
-                      capacity: context
-                              .read<RoomSelectionPageController>()
-                              .rooms?[index]
-                              .capacity ??
-                          0,
-                    ),
-                  );
-                },
               ),
             ),
           ],

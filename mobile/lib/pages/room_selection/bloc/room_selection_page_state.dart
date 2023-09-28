@@ -2,34 +2,38 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meeting_room_booking/model/room.dart';
 
-class SearchRoomPageState extends Equatable {
+class RoomSelectionPageState extends Equatable {
   final DateTime? selectedDate;
   final TimeOfDay? selectedStartTime;
   final TimeOfDay? selectedEndTime;
   final int? selectedCapacity;
   final List<Room>? roomList;
+  final Room? roomDetail;
 
-  const SearchRoomPageState({
+  const RoomSelectionPageState({
     this.selectedDate,
     this.selectedStartTime,
     this.selectedEndTime,
     this.selectedCapacity,
     this.roomList,
+    this.roomDetail,
   });
 
-  SearchRoomPageState copyWith({
+  RoomSelectionPageState copyWith({
     DateTime? selectedDate,
     TimeOfDay? selectedStartTime,
     TimeOfDay? selectedEndTime,
     int? selectedCapacity,
     List<Room>? roomList,
+    Room? roomDetail,
   }) {
-    return SearchRoomPageState(
+    return RoomSelectionPageState(
       selectedDate: selectedDate ?? this.selectedDate,
       selectedStartTime: selectedStartTime ?? this.selectedStartTime,
       selectedEndTime: selectedEndTime ?? this.selectedEndTime,
       selectedCapacity: selectedCapacity ?? this.selectedCapacity,
       roomList: roomList ?? this.roomList,
+      roomDetail: roomDetail ?? this.roomDetail,
     );
   }
 
@@ -40,5 +44,6 @@ class SearchRoomPageState extends Equatable {
         selectedEndTime,
         selectedCapacity,
         roomList,
+        roomDetail,
       ];
 }
