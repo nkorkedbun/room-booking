@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BookingRoomAppBar extends StatelessWidget with PreferredSizeWidget {
+class BookingRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const BookingRoomAppBar(this.title, {super.key});
   final String title;
   @override
