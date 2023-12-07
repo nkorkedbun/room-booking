@@ -7,14 +7,15 @@ server:
 
 logging:
   level:
-    web: DEBUG
+    web: INFO
     org:
       springframework:
-        web: DEBUG
+        web: INFO
       hibernate:
-        SQL: TRACE
-        orm.jdbc.bind: TRACE
+        SQL: INFO
+        orm.jdbc.bind: INFO
 
+# http://localhost:9002/booking-svc/doc
 springdoc:
   swagger-ui:
     path: /doc
@@ -29,7 +30,8 @@ spring:
         driver-class-name: org.postgresql.Driver
         username: postgres
         password: postgres
-        url: jdbc:postgresql://localhost:5432/booking
+        # url: jdbc:postgresql://localhost:5432/booking
+        url: jdbc:postgresql://192.168.1.34:5432/booking
     jpa:
       hibernate:
         ddl-auto:  update

@@ -73,11 +73,11 @@ public class RoomService {
     }
 
     public Long bookRoom(Long roomId, Long userId, BookingRequest req) {
-        validateBookingTime(req.getStartTime(), req.getEndTime());
+        validateBookingTime(req.getStartDateTime(), req.getEndDateTime());
 
         Booking booking = new Booking();
-        booking.setStartTime(req.getStartTime());
-        booking.setEndTime(req.getEndTime());
+        booking.setStartTime(req.getStartDateTime());
+        booking.setEndTime(req.getEndDateTime());
         booking.setRoom(roomRepo.findById(roomId).get());
         booking.setUser(userRepo.findById(userId).get());
         booking = bookingRepo.save(booking);

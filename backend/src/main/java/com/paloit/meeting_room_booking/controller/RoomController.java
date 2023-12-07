@@ -1,7 +1,5 @@
 package com.paloit.meeting_room_booking.controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.paloit.meeting_room_booking.model.request.BookingRequest;
 import com.paloit.meeting_room_booking.model.request.CreateRoomRequest;
 import com.paloit.meeting_room_booking.model.response.RoomResponse;
