@@ -9,6 +9,8 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.paloit.meeting_room_booking.entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,12 +28,18 @@ public class RefreshTokenServiceImpl implements JwtService {
     public String extractEmail(String token) {
         return extractClaim(token, (claims) -> claims.get("email", String.class));
     }
+    
+    @Override
+    public Long extractUserId(String token) {
+        return extractClaim(token, (claims) -> claims.get("id", Long.class));
+    }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("email", userDetails.getUsername());
-        claims.put("roles", userDetails.getAuthorities().stream().map(authority -> authority.getAuthority()).toArray());
+        claims.put("id", user.getId());
+        claims.put("email", user.getUsername());
+        claims.put("roles", user.getAuthorities().stream().map(authority -> authority.getAuthority()).toArray());
         return Jwts.builder().setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 7))

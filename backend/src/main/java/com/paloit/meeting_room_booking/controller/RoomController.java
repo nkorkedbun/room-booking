@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.paloit.meeting_room_booking.constant.CustomHeader;
+import com.paloit.meeting_room_booking.model.MutableHttpServletRequest;
 import com.paloit.meeting_room_booking.model.request.BookingRequest;
 import com.paloit.meeting_room_booking.model.request.CreateRoomRequest;
 import com.paloit.meeting_room_booking.model.response.RoomResponse;
 import com.paloit.meeting_room_booking.service.RoomService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -31,10 +34,11 @@ public class RoomController {
 
     @GetMapping()
     public ResponseEntity<List<RoomResponse>> getRooms(
-            @RequestParam(required = false, name = "date") String date,
-            @RequestParam(required = false, name = "start_time") String startTime,
-            @RequestParam(required = false, name = "end_time") String endTime,
-            @RequestParam(required = false, name = "capacity") Integer numberOfGuest) {
+            @RequestParam(required = false, value = "date") String date,
+            @RequestParam(required = false, value = "start_time") String startTime,
+            @RequestParam(required = false, value = "end_time") String endTime,
+            @RequestParam(required = false, value = "capacity") Integer numberOfGuest,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         if (date != null && startTime != null && endTime != null && numberOfGuest != null) {
             return ResponseEntity.ok(service.searchAvailableRoom(date, startTime, endTime, numberOfGuest));
         } else if (date != null || startTime != null || endTime != null || numberOfGuest != null) {
@@ -45,23 +49,29 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoomResponse> getRoomById(@PathVariable("id") Long roomId) {
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable("id") Long roomId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok(service.getRoomById(roomId));
     }
 
     @PostMapping()
-    public ResponseEntity<RoomResponse> createRoom(@RequestBody CreateRoomRequest req) {
+    public ResponseEntity<RoomResponse> createRoom(@RequestBody CreateRoomRequest req,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createRoom(req));
     }
 
     @PostMapping("/{id}/book")
     public Long bookRoom(@PathVariable("id") Long roomId, @RequestBody BookingRequest req,
-            @RequestHeader("user_id") Long userId) {
+            @RequestHeader(value = "Authorization", required = false) String token,
+            HttpServletRequest request) {
+        MutableHttpServletRequest mutableRequest = new MutableHttpServletRequest(request);
+        Long userId = Long.valueOf(mutableRequest.getHeader(CustomHeader.X_USER_ID.getValue()));
         return service.bookRoom(roomId, userId, req);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable("id") Long roomId) {
+    public ResponseEntity<Void> deleteRoom(@PathVariable("id") Long roomId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         service.deleteRoom(roomId);
         return ResponseEntity.accepted().build();
     }

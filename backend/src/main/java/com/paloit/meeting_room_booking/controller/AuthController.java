@@ -20,11 +20,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    
+
     private final AuthService service;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResponse> register(@RequestBody CreateUserRequest request){
+    public ResponseEntity<UserResponse> register(@RequestBody CreateUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.register(request));
     }
 
