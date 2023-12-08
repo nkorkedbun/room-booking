@@ -2,7 +2,11 @@ package com.paloit.meeting_room_booking.entity;
 
 import java.time.LocalDateTime;
 
+import com.paloit.meeting_room_booking.constant.BookingStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,4 +31,6 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status = BookingStatus.RESERVED;
 }

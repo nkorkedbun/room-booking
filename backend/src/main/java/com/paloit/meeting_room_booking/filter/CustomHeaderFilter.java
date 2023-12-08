@@ -23,7 +23,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomHeaderFilter implements Filter {
 
-    private static final List<String> EXCLUDED_URLS = Arrays.asList("/api/v1/auth");
+    private static final List<String> EXCLUDED_URLS = Arrays.asList("/api/v1/auth",
+            "/doc",
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/swagger-resources",
+            "/swagger-ui",
+            "api-docs",
+            "/error");
     private final AccessTokenServiceImpl jwtService;
 
     @Override

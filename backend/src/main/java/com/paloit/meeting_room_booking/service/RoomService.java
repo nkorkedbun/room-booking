@@ -89,9 +89,6 @@ public class RoomService {
         boolean isBeforeStartTime = endTime.isBefore(startTime);
         boolean isWithin30MinTimeFrame = isWithin30MinuteTimeFrame(startTime) && isWithin30MinuteTimeFrame(endTime);
 
-        System.out.println(isBeforePresent);
-        System.out.println(isBeforeStartTime);
-        System.out.println(!isWithin30MinTimeFrame);
         if (isBeforePresent || isBeforeStartTime || !isWithin30MinTimeFrame) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Booking Time");
         }
